@@ -221,6 +221,35 @@ Exit 0
 
 ---
 
+## Polish 05: GitHub Publish & CI ✅
+
+- Status: complete
+- Repo URL: https://github.com/hamchowderr/template-mastra-voice
+- CI runs:
+  - typecheck: ✓ 43s
+  - eval: ✓ 1m8s (1/5 cases under AIMock per Polish 04)
+  - build: ✓ 55s
+  - docker: ✓ 2m1s
+- Tag: v0.1.0 pushed
+- Provisioning smoke test: skipped
+- Notes: AIMock Docker image uses `-f <fixtures-dir>` not `-c <config-file>`. Used base template's exact working pattern. `aimock.json` is for local use only; CI passes fixtures dir directly to Docker.
+
+---
+
+## Voice Polish Complete ✅
+
+- Status: complete
+- All 5 polish steps:
+  - 01 Package.json name fix: pass
+  - 02 Voice quality investigation: fixed (speaker sampleRate 24100→24000 Hz)
+  - 03 Patch fragility docs: pass
+  - 04 AIMock fixtures: Path A (documented as v1 limitation)
+  - 05 GitHub publish: pass — repo at https://github.com/hamchowderr/template-mastra-voice, tag v0.1.0
+- Outstanding issues: none
+- Recommended next action: ready to proceed with NCA template
+
+---
+
 ## Open Issues
 
 | Issue | Priority | Notes |
