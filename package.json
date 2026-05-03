@@ -34,7 +34,6 @@
     "zod": "^4.4.2"
   },
   "devDependencies": {
-    "@copilotkit/aimock": "^1.14.5",
     "@types/node": "^25.6.0",
     "mastra": "^1.7.3",
     "supabase": "^2.98.0",
