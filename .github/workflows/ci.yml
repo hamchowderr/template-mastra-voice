@@ -77,16 +77,12 @@ jobs:
       - run: npm ci
       - name: Start AIMock
         run: |
-          docker run -d --name aimock \
-            -p 4010:4010 \
-            -v ${{ github.workspace }}:/workspace \
-            ghcr.io/copilotkit/aimock -h 0.0.0.0 -c /workspace/aimock.json
+          npx --yes @copilotkit/aimock --config aimock.json --host 0.0.0.0 --port 4010 &
           echo "Waiting for AIMock on port 4010..."
           for i in $(seq 1 30); do
             curl -s http://127.0.0.1:4010/ > /dev/null 2>&1 && echo "AIMock ready" && exit 0
             sleep 1
           done
-          echo "=== AIMock logs ===" && docker logs aimock
           echo "AIMock failed to start" && exit 1
       - name: Create empty .env for CI
         run: touch .env
