@@ -1,0 +1,38 @@
+{
+  "agentId": "voiceAssistant",
+  "thresholds": {
+    "answerRelevancy": 0.3
+  },
+  "cases": [
+    {
+      "name": "calls getCurrentTime when asked about time",
+      "input": "What time is it right now?",
+      "expectedTool": "getCurrentTime",
+      "expectedKeywords": []
+    },
+    {
+      "name": "calls evaluateMath when asked to compute",
+      "input": "What is 47 times 23?",
+      "expectedTool": "evaluateMath",
+      "expectedKeywords": []
+    },
+    {
+      "name": "calls evaluateMath for word-form math",
+      "input": "Add fifteen and twenty-seven for me.",
+      "expectedTool": "evaluateMath",
+      "expectedKeywords": []
+    },
+    {
+      "name": "no tool needed for casual hello",
+      "input": "Hi, how are you?",
+      "expectedTool": null,
+      "expectedKeywords": []
+    },
+    {
+      "name": "graceful exit on goodbye",
+      "input": "Thanks, that's all I needed. Goodbye!",
+      "expectedTool": null,
+      "expectedKeywords": ["bye"]
+    }
+  ]
+}

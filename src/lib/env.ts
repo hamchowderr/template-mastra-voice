@@ -1,0 +1,63 @@
+import { z } from 'zod';
+
+const boolish = z
+  .union([z.literal('true'), z.literal('false'), z.literal('1'), z.literal('0')])
+  .transform((v) => v === 'true' || v === '1');
+
+const envSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+    APP_SECRET: z.string().min(32, 'APP_SECRET must be at least 32 chars'),
+
+    SUPABASE_URL: z.string().url(),
+    SUPABASE_ANON_KEY: z.string().min(1),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+    SUPABASE_DB_URL: z
+      .string()
+      .url()
+      .refine((v) => v.startsWith('postgres'), 'Must be a postgres:// connection string'),
+
+    ANTHROPIC_API_KEY: z.string().optional(),
+    OPENAI_API_KEY: z.string().optional(),
+    GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
+
+    // Voice (Gemini Live) — separate from GOOGLE_GENERATIVE_AI_API_KEY (different SDK convention)
+    GOOGLE_API_KEY: z.string().min(1, 'GOOGLE_API_KEY required for voice integration'),
+    GEMINI_LIVE_MODEL: z.string().min(1).default('gemini-3.1-flash-live-preview'),
+    GEMINI_LIVE_SPEAKER: z
+      .enum(['Puck', 'Charon', 'Kore', 'Fenrir', 'Aoede', 'Leda', 'Orus', 'Zephyr'])
+      .default('Puck'),
+
+    USE_AIMOCK: boolish.default(false),
+    AIMOCK_URL: z.string().url().default('http://localhost:4010'),
+
+    E2E_BASE_URL: z.string().url().optional(),
+
+    MASTRA_TELEMETRY_DISABLED: z.string().optional(),
+    MASTRA_CLOUD_ACCESS_TOKEN: z.string().optional(),
+  })
+  .refine(
+    (e) => Boolean(e.ANTHROPIC_API_KEY || e.OPENAI_API_KEY || e.GOOGLE_GENERATIVE_AI_API_KEY),
+    {
+      message:
+        'At least one LLM provider key required (ANTHROPIC_API_KEY, OPENAI_API_KEY, or GOOGLE_GENERATIVE_AI_API_KEY)',
+    },
+  );
+
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error('❌ Invalid environment variables:\n');
+  for (const [key, errors] of Object.entries(parsed.error.flatten().fieldErrors)) {
+    console.error(`  ${key}: ${(errors as string[]).join(', ')}`);
+  }
+  for (const err of parsed.error.flatten().formErrors) {
+    console.error(`  ${err}`);
+  }
+  console.error('\nSee .env.example for the full list of required variables.');
+  process.exit(1);
+}
+
+export const env = Object.freeze(parsed.data);
+export type Env = typeof env;
