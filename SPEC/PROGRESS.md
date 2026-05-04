@@ -1,5 +1,20 @@
 # Build Progress
 
+## Voice Polish — Standard Reachability + Editor Configuration — COMPLETE
+- Status: complete
+- All 4 polish steps:
+  - 01 Install Packages + Editor Storage: pass
+  - 02 Configure MCPServer + MastraEditor: pass
+  - 03 Verify + Document Reachability: pass
+  - 04 Push to Main: pass
+- Repo: https://github.com/hamchowderr/template-mastra-voice
+- CI: green on main (typecheck ✓, build ✓, eval ✓, docker ✓) — run 25296569153
+- Packages installed: @mastra/editor@0.7.22, @mastra/mcp@1.6.0
+- Files changed: package.json, package-lock.json, src/mastra/index.ts, src/mastra/agents/_example.ts, README.md, AGENTS.md, SPEC/PROGRESS.md, SPEC/polish-protocols/ (added)
+- No new tag pushed
+
+---
+
 ## Voice Polish 03: Verify Reachability + Document
 - Status: complete
 - Endpoints verified:
