@@ -15,3 +15,8 @@ mastra.duckdb*
 # Beads / Dolt files (added by bd init)
 .dolt/
 .beads-credential-key
+.beads/
+
+# Author-only build artifacts (specs, progress, build prompts)
+SPEC/
+prompts/

@@ -1,7 +1,0 @@
-{
-  "database": "dolt",
-  "backend": "dolt",
-  "dolt_mode": "embedded",
-  "dolt_database": "template_mastra_base",
-  "project_id": "9253ba58-649f-40dd-b4a9-50abf3970e6b"
-}
