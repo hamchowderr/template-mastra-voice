@@ -12,15 +12,28 @@ import { PostgresStore } from '@mastra/pg';
 import { DuckDBStore } from '@mastra/duckdb';
 import { MastraCompositeStore } from '@mastra/core/storage';
 import { Observability, DefaultExporter, SensitiveDataFilter } from '@mastra/observability';
+import { MastraEditor } from '@mastra/editor';
+import { MCPServer } from '@mastra/mcp';
 import { voiceAssistantAgent } from './agents/_example';
 import { answerRelevancyScorer } from './scorers/_example.scorers';
+
+const mcpServer = new MCPServer({
+  id: 'voice-mcp',
+  name: 'template-mastra-voice',
+  version: '0.1.0',
+  description: 'MCP server exposing template-mastra-voice agents as tools',
+  tools: {},
+  agents: { voiceAssistant: voiceAssistantAgent },
+});
 
 export const mastra = new Mastra({
   agents: { voiceAssistant: voiceAssistantAgent },
   scorers: { answerRelevancyScorer },
+  mcpServers: { voiceMcp: mcpServer },
   storage: new MastraCompositeStore({
     id: 'composite-storage',
     default: new PostgresStore({ id: 'mastra-storage', connectionString: env.SUPABASE_DB_URL }),
+    editor: new PostgresStore({ id: 'mastra-editor-storage', connectionString: env.SUPABASE_DB_URL }),
     domains: {
       observability: await new DuckDBStore().getStore('observability'),
     },
@@ -38,4 +51,5 @@ export const mastra = new Mastra({
       },
     },
   }),
+  editor: new MastraEditor(),
 });

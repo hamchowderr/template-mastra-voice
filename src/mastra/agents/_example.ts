@@ -22,6 +22,7 @@ import { answerRelevancyScorer } from '../scorers/_example.scorers';
 export const voiceAssistantAgent = new Agent({
   id: 'voiceAssistant',
   name: 'Voice Assistant',
+  description: 'Real-time voice assistant powered by Gemini Live STS. Handles tool-calling for time queries and math evaluation. Reference implementation for voice agents in the family.',
   instructions: `You are a friendly real-time voice assistant.
 
 Rules:

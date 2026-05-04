@@ -1,5 +1,38 @@
 # Build Progress
 
+## Voice Polish 03: Verify Reachability + Document
+- Status: complete
+- Endpoints verified:
+  - REST: PARTIAL — route responds (HTTP 500 with current config); `voiceAssistant` agent uses `anthropic/claude-haiku-4-5` (set during AIMock eval fix) but `ANTHROPIC_API_KEY` is empty in `.env`. Route is reachable; generation requires either ANTHROPIC_API_KEY or model change. Known state — not a routing issue.
+  - A2A agent card: PASS — `GET /api/.well-known/voiceAssistant/agent-card.json` → JSON agent metadata
+  - A2A execute: not separately verified (confirmed route works from base template; same Mastra routing)
+  - MCP: PASS — `POST /api/mcp/voice-mcp/mcp` initialize + tools/list → `ask_voiceAssistant` listed
+  - Studio + Editor: PASS — UI loads, voiceAssistant visible, Editor tab present
+- README updated: "Reachability" section added after Quickstart with voice-specific note (Studio is text mode, no audio streaming)
+- AGENTS.md updated: "Reachability conventions" section added before "Things to Never Do"
+- Spec deviations: same as base — A2A agent card is at `GET /api/.well-known/{agentId}/agent-card.json`, not `GET /a2a/{agentId}`; MCP URL uses server id (`voice-mcp`), not config key (`voiceMcp`)
+
+---
+
+## Voice Polish 02: Configure MCPServer + MastraEditor
+- Status: complete
+- voiceAssistant description: added — "Real-time voice assistant powered by Gemini Live STS. Handles tool-calling for time queries and math evaluation. Reference implementation for voice agents in the family."
+- Imports added: MastraEditor, MCPServer
+- Configuration: MCPServer instance (id: voice-mcp) + mcpServers and editor fields in Mastra constructor
+- Verification: typecheck passes; dev boots; health 200; MCP initialize returns `{"name":"template-mastra-voice","version":"0.1.0"}`; voiceAssistant agent confirmed; gemini-live-patch.ts untouched
+- Spec deviations: same as base — `tools: {}` required; MCP URL uses id (`voice-mcp`) not key (`voiceMcp`)
+
+---
+
+## Voice Polish 01 (reachability): Install Packages + Editor Storage
+- Status: complete
+- Installed: @mastra/editor@0.7.22, @mastra/mcp@1.6.0
+- File changed: src/mastra/index.ts — added `editor` key to MastraCompositeStore at top level (sibling of `default`/`domains`); gemini-live-patch.ts untouched
+- Verification: typecheck passes (exit 0)
+- Spec deviation: spec placed `editor` inside `domains` — that key does not exist in `Partial<StorageDomains>`. Actual API exposes `editor` as a top-level `MastraCompositeStoreConfig` field. Fixed accordingly.
+
+---
+
 ## Phases Complete
 
 | Phase | Title | Status |

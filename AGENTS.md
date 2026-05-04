@@ -142,6 +142,27 @@ new PostgresStore({ id: 'mastra-storage', connectionString: env.SUPABASE_DB_URL 
 
 ---
 
+## Reachability conventions
+
+Every agent registered in `src/mastra/index.ts` is reachable through four standard protocols, configured at the Mastra level:
+
+- REST: `POST /api/agents/{agentId}/generate` (and `/stream`) — automatic; text mode only for voice agents
+- A2A agent card: `GET /api/.well-known/{agentId}/agent-card.json` — automatic
+- A2A execute: `POST /api/a2a/{agentId}` (JSON-RPC, `method: "message/send"`) — automatic
+- MCP: `POST /api/mcp/{serverId}/mcp` — via `MCPServer` instance in `src/mastra/index.ts`
+- Studio: `localhost:4111` UI — automatic via `mastra dev` (text mode; Studio does not stream audio)
+
+Note: `/a2a/{agentId}` (without `/api` prefix) is caught by Studio's router and returns HTML. Always use the `/api/` prefix for A2A and MCP calls.
+
+When adding a new agent:
+1. Register it in the `agents` field of the Mastra constructor (gets REST + A2A + Studio automatically)
+2. Add it to the `agents` field of the `MCPServer` instance (exposes via MCP as `ask_<agentId>`)
+3. Ensure the agent has a non-empty `description` property — MCPServer fails to start without it
+
+The `MastraEditor` instance gives non-developers a way to iterate on agent prompts and tools without code changes. Changes are versioned and stored in the `editor` storage domain. The editor is mandatory for every template in this family.
+
+---
+
 ## Things to Never Do
 
 - **Never read `process.env` directly** — use `env` from `src/lib/env.ts`
